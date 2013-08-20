@@ -1,0 +1,40 @@
+#!/bin/sh
+# postinst script for mongodb
+
+set -e
+
+case "$1" in
+    configure)
+	# create a mongodb group and user
+        if ! grep -q mongodb /etc/passwd; then
+		adduser --system --no-create-home mongodb
+		addgroup --system mongodb
+		adduser mongodb mongodb
+        fi
+
+	# create db -- note: this should agree with dbpath in mongodb.conf
+	mkdir -p /var/lib/mongodb
+	chown -R mongodb:mongodb /var/lib/mongodb
+
+	# create logdir -- note: this should agree with logpath in mongodb.conf
+	mkdir -p /var/log/mongodb
+	chown -R mongodb:mongodb /var/log/mongodb
+
+	# set init script link
+	ln -s /lib/init/upstart-job /etc/init.d/mongodb
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+
+

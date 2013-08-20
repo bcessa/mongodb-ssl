@@ -1,0 +1,3 @@
+compiled/* /usr/bin/
+conf/mongodb.conf /etc/
+upstart/mongodb.conf /etc/init/
