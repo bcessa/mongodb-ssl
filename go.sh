@@ -123,14 +123,73 @@ gpg --gen-key --no-use-agent
 # Build the actual package
 debuild -b
 
+# CLIENTS EXTRA PACKAGE
+printf "${green}*${reset} Do you wish to create an additional clients-apps-only package? ( ${blue}'yes'${reset} or ${red}'no'${reset} ): "
+read DO_CLIENTS
+if [ "$DO_CLIENTS" == 'yes' ]; then
+	# Working dirs
+	PKG_CLIENTS=${PKG_NAME}-clients
+	PKG_CLIENTS_DIR=$PKG_CLIENTS/$PKG_CLIENTS-$VERSION
+	
+	# Move binaries, and man files
+	cd $BASE
+	mkdir -p $PKG_CLIENTS_DIR/{compiled,man}
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongo $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongodump $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongoexport $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongofiles $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongoimport $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongorestore $PKG_CLIENTS_DIR/compiled/.
+	cp $PKG_NAME/$PKG_NAME-$VERSION/compiled/mongostat $PKG_CLIENTS_DIR/compiled/.
+	cp source/debian/mongo.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongodump.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongoexport.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongofiles.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongoimport.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongorestore.1 $PKG_CLIENTS_DIR/man/.
+	cp source/debian/mongostat.1 $PKG_CLIENTS_DIR/man/.
+	
+	# Create the basic package layout
+	export DEBFULLNAME=$REALNAME
+	export DEBEMAIL=$EMAIL
+	cd $PKG_CLIENTS_DIR
+	dh_make -c gpl3 -e $EMAIL -n -s
+	cd debian
+	rm *.ex *.EX README*
+	cp $BASE/template/clients/* .
+	cd ..
+	
+	# Any modifications to the changelog?
+	printf "${green}*${reset} Any modifications to the clients package changelog file? ( ${blue}'yes'${reset} or ${red}'no'${reset} ): "
+	read MODCLOG_C
+	if [ "$MODCLOG_C" == 'yes' ]; then
+		nano debian/changelog
+	fi
+	
+	# Add a description to the control file?
+	printf "${green}*${reset} Any modifications to the clients package control file (description)? ( ${blue}'yes'${reset} or ${red}'no'${reset} ): "
+	read MODCTRL_C
+	if [ "$MODCTRL_C" == 'yes' ]; then
+		nano debian/control
+	fi
+	
+	# Build the clients package
+	debuild -b
+fi
+
 # CLEANUP
 echo "${blue}>${reset} All is done, let's clean up!"
 sleep 2
 cd $BASE
 mv $PKG_NAME/*.deb .
+if [ "$DO_CLIENTS" == 'yes' ]; then
+	mv $PKG_CLIENTS/*.deb .
+	rm -rf $PKG_CLIENTS
+fi
 rm -rf $TEMP
 rm -rf $BASE/source
 rm -rf $PKG_NAME
 
+# EXIT
 echo "${blue}>${reset} Package ready for installation and distribution!"
 sleep 1

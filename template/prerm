@@ -3,12 +3,10 @@
 
 set -e
 
-echo "arg: $1"
-
 case "$1" in
     remove|upgrade|deconfigure)
-	# stop service if running
-	service mongodb stop
+        # stop service if running
+        service mongodb stop
     ;;
 
     failed-upgrade)
