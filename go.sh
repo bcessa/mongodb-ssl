@@ -86,8 +86,8 @@ cd $BASE
 mkdir -p $PKG_NAME/$PKG_NAME-$VERSION/{compiled,conf,man,upstart}
 mv $TEMP/bin/* $PKG_NAME/$PKG_NAME-$VERSION/compiled/.
 cp source/debian/*.1 $PKG_NAME/$PKG_NAME-$VERSION/man/.
-cp source/debian/mongodb.conf $PKG_NAME/$PKG_NAME-$VERSION/conf/.
-cp source/debian/mongodb.upstart $PKG_NAME/$PKG_NAME-$VERSION/upstart/mongodb.conf
+cp source/debian/mongod.conf $PKG_NAME/$PKG_NAME-$VERSION/conf/.
+cp source/debian/mongod.upstart $PKG_NAME/$PKG_NAME-$VERSION/upstart/mongod.conf
 
 # Create the basic package layout
 export DEBFULLNAME=$REALNAME
@@ -130,7 +130,7 @@ if [ "$DO_CLIENTS" == 'yes' ]; then
 	# Working dirs
 	PKG_CLIENTS=${PKG_NAME}-clients
 	PKG_CLIENTS_DIR=$PKG_CLIENTS/$PKG_CLIENTS-$VERSION
-	
+
 	# Move binaries, and man files
 	cd $BASE
 	mkdir -p $PKG_CLIENTS_DIR/{compiled,man}
@@ -148,7 +148,7 @@ if [ "$DO_CLIENTS" == 'yes' ]; then
 	cp source/debian/mongoimport.1 $PKG_CLIENTS_DIR/man/.
 	cp source/debian/mongorestore.1 $PKG_CLIENTS_DIR/man/.
 	cp source/debian/mongostat.1 $PKG_CLIENTS_DIR/man/.
-	
+
 	# Create the basic package layout
 	export DEBFULLNAME=$REALNAME
 	export DEBEMAIL=$EMAIL
@@ -158,21 +158,21 @@ if [ "$DO_CLIENTS" == 'yes' ]; then
 	rm *.ex *.EX README*
 	cp $BASE/template/clients/* .
 	cd ..
-	
+
 	# Any modifications to the changelog?
 	printf "${green}*${reset} Any modifications to the clients package changelog file? ( ${blue}'yes'${reset} or ${red}'no'${reset} ): "
 	read MODCLOG_C
 	if [ "$MODCLOG_C" == 'yes' ]; then
 		nano debian/changelog
 	fi
-	
+
 	# Add a description to the control file?
 	printf "${green}*${reset} Any modifications to the clients package control file (description)? ( ${blue}'yes'${reset} or ${red}'no'${reset} ): "
 	read MODCTRL_C
 	if [ "$MODCTRL_C" == 'yes' ]; then
 		nano debian/control
 	fi
-	
+
 	# Build the clients package
 	debuild -b
 fi
