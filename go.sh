@@ -86,8 +86,9 @@ cd $BASE
 mkdir -p $PKG_NAME/$PKG_NAME-$VERSION/{compiled,conf,man,upstart}
 mv $TEMP/bin/* $PKG_NAME/$PKG_NAME-$VERSION/compiled/.
 cp source/debian/*.1 $PKG_NAME/$PKG_NAME-$VERSION/man/.
-cp source/debian/mongodb.conf $PKG_NAME/$PKG_NAME-$VERSION/conf/.
-cp source/debian/mongodb.upstart $PKG_NAME/$PKG_NAME-$VERSION/upstart/mongodb.conf
+# It seems that at on some mongoversion this file is called mongod.conf not mongodb.conf, that leads to failed building package
+cp source/debian/mongod*.conf $PKG_NAME/$PKG_NAME-$VERSION/conf/.
+cp source/debian/mongod*.upstart $PKG_NAME/$PKG_NAME-$VERSION/upstart/mongodb.conf
 
 # Create the basic package layout
 export DEBFULLNAME=$REALNAME
