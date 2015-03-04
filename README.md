@@ -7,7 +7,7 @@ MongoDB is __great__, however for some particular reason it doesn't include SSL 
 We require such support for a couple of projects so I decided to give it a try and create a builder script that was as __reusable__ and __automatic__ as possible.
 
 ## Disclaimer
-This was my very first approach to the hole DEB package system, I'm sure is far from perfect and any enhancements/contributions are deeply appreciated ;)
+This was my very first approach to the whole DEB package system, I'm sure is far from perfect and any enhancements/contributions are deeply appreciated ;)
 
 ## Usage
 Enough introduction, how to actually use the thing and what it will do!
