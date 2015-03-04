@@ -65,7 +65,7 @@ read VERSION
 TEMP=/var/tmp/$PKG_NAME-$VERSION
 mkdir $TEMP
 
-printf "${green}*${reset} Specify how many packages in parrallel to build: "
+printf "${green}*${reset} Specify how many packages in parallel to build: "
 read PARALLEL
 
 # Checkout selected version and start compilation process
